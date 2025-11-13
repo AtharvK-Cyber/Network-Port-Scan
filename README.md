@@ -1,2 +1,167 @@
 # Network-Port-Scan
 Learn to discover open ports on devices in your local network to understand  network exposure.
+
+For Security Concern We going to Use NAT Network.
+
+
+First We have to Install Nmap on our Device for Now i am using Linux 
+Nmap:- https://nmap.org/download
+
+=================================
+SECURITY SCAN ANALYSIS
+=================================
+Nmap Command
+nmap -sS 192.168.153.130/24
+Report By: AtharvK
+
+---------------------------------
+IP: 192.168.153.131
+---------------------------------
+
+SCAN RESULTS:
+PORT     STATE   SERVICE
+21/tcp   open    ftp
+22/tcp   open    ssh
+23/tcp   open    telnet
+25/tcp   open    smtp
+53/tcp   open    domain
+80/tcp   open    http
+111/tcp  open    rpcbind
+139/tcp  open    netbios-ssn
+445/tcp  open    microsoft-ds
+512/tcp  open    exec
+513/tcp  open    login
+514/tcp  open    shell
+1099/tcp open    rmiregistry
+1524/tcp open    ingreslock
+2049/tcp open    nfs
+2121/tcp open    ccproxy-ftp
+3306/tcp open    mysql
+5432/tcp open    postgresql
+5900/tcp open    vnc
+6000/tcp open    X11
+6667/tcp open    irc
+8009/tcp open    ajp13
+8180/tcp open    unknown
+
+RISK ANALYSIS:
+Port: 21/tcp (ftp)
+Risk: High
+Why / Mitigation: FTP transmits credentials in cleartext. Mitigation: Disable FTP or replace with SFTP/FTPS; restrict access by IP; strong creds.
+
+Port: 22/tcp (ssh)
+Risk: Medium
+Why / Mitigation: SSH is common remote admin vector — safe if hardened. Mitigation: Use key-based auth, disable password logins, change port or use port-knocking, fail2ban, restrict source IPs.
+
+Port: 23/tcp (telnet)
+Risk: Critical
+Why / Mitigation: Telnet is unencrypted and easily abused. Mitigation: Disable Telnet; use SSH instead; block on firewall.
+
+Port: 25/tcp (smtp)
+Risk: Medium
+Why / Mitigation: Mail servers can be abused for spam or exploited. Mitigation: Require auth/relay restrictions, patch MTA, monitor logs, restrict port to known mail gateways.
+
+Port: 53/tcp (domain)
+Risk: High
+Why / Mitigation: Open DNS can be used for cache poisoning, DNS amplification. Mitigation: Run authoritative/recursive separation; disable open recursion; rate-limit and restrict queries.
+
+Port: 80/tcp (http)
+Risk: Medium
+Why / Mitigation: HTTP may expose web apps with vulnerabilities. Mitigation: Use HTTPS, patch web servers, WAF, scan web apps, remove dev/test pages.
+
+Port: 111/tcp (rpcbind)
+Risk: High
+Why / Mitigation: rpcbind/portmapper can expose RPC services and lead to remote exploits. Mitigation: Disable if unused; firewall RPC ports; restrict to trusted hosts.
+
+Port: 139/tcp (netbios-ssn)
+Risk: High
+Why / Mitigation: SMB/NetBIOS exposes file shares and credentials. Mitigation: Block on WAN, disable NetBIOS over TCP if not needed, enforce SMB signing, patch.
+
+Port: 445/tcp (microsoft-ds)
+Risk: Critical
+Why / Mitigation: SMB is high-risk (ransomware/remote code exec history). Mitigation: Block from untrusted networks, apply MS patches, limit shares, use strong auth and monitoring.
+
+Port: 512/tcp (exec)
+Risk: Critical
+Why / Mitigation: rsh/rlogins are insecure and allow remote exec without encryption. Mitigation: Disable rsh/rlogin; use SSH.
+
+Port: 513/tcp (login)
+Risk: Critical
+Why / Mitigation: Same as above — insecure legacy remote login. Mitigation: Disable; use SSH.
+
+Port: 514/tcp (shell)
+Risk: High
+Why / Mitigation: Legacy remote shell services and syslog implications. Mitigation: Disable insecure services; use secure logging and SSH.
+
+Port: 1099/tcp (rmiregistry)
+Risk: High
+Why / Mitigation: Java RMI can expose remote objects; often misconfigured and vulnerable. Mitigation: Restrict access, require auth, patch JVM apps, bind to localhost if internal only.
+
+Port: 1524/tcp (ingreslock)
+Risk: Medium
+Why / Mitigation: Legacy DB or lock services may be unpatched. Mitigation: Remove legacy services, patch, firewall restrict.
+
+Port: 2049/tcp (nfs)
+Risk: High
+Why / Mitigation: NFS can expose file systems; by default little auth for v3. Mitigation: Export only to trusted networks, use NFSv4 with auth (sec), firewall.
+
+Port: 2121/tcp (ccproxy-ftp)
+Risk: High
+Why / Mitigation: Alternate FTP services same FTP risks. Mitigation: Disable or secure (SFTP/FTPS), restrict access.
+
+Port: 3306/tcp (mysql)
+Risk: High
+Why / Mitigation: Databases exposed to network are attractive target. Mitigation: Bind to localhost, use strong DB creds, restrict IPs, use TLS, audit/log.
+
+Port: 5432/tcp (postgresql)
+Risk: High
+Why / Mitigation: Same DB concerns as MySQL. Mitigation: Bind to localhost, firewall, strong auth, TLS, role hardening.
+
+Port: 5900/tcp (vnc)
+Risk: High
+Why / Mitigation: VNC often lacks strong auth and is unencrypted. Mitigation: Disable or tunnel over SSH/VPN, enforce strong passwords and network restrictions.
+
+Port: 6000/tcp (X11)
+Risk: High
+Why / Mitigation: X11 remote display can allow input sniffing and code exec. Mitigation: Block from network, use SSH X11 forwarding instead.
+
+Port: 6667/tcp (irc)
+Risk: Medium
+Why / Mitigation: IRC servers/clients can be abused or used as C2. Mitigation: Restrict access and monitor traffic.
+
+Port: 8009/tcp (ajp13)
+Risk: High
+Why / Mitigation: Apache JServ Protocol (AJP) has had severe vulnerabilities (e.g., Ghostcat). Mitigation: Disable AJP if unused; bind to localhost; apply patches; restrict access.
+
+Port: 8180/tcp (unknown)
+Risk: Medium
+Why / Mitigation: Likely alternate HTTP/tomcat admin UI — can expose admin panels. Mitigation: Verify service, restrict access, enable auth, patch apps.
+
+
+---------------------------------
+IP: 192.168.153.254
+---------------------------------
+
+N/A
+
+
+---------------------------------
+IP: 192.168.153.130
+---------------------------------
+
+SCAN RESULTS:
+PORT     STATE     SERVICE
+80/tcp   open      http
+7443/tcp filtered  oracleas-https
+
+RISK ANALYSIS:
+Port: 80/tcp (http)
+Risk: Medium
+Why / Mitigation: HTTP serves content unencrypted — attackers can intercept or tamper with traffic and web apps can expose vulnerabilities. Mitigation: Serve traffic over HTTPS (redirect 80 → 443), patch web server and web apps, remove default pages, use a WAF, harden and monitor logs.
+
+Port: 7443/tcp (oracleas-https)
+Risk: Medium
+Why / Mitigation: filtered indicates packets are blocked/filtered by a firewall/IPS (not responding). Port 7443 is often used for application-server HTTPS (Oracle/Tomcat). If reachable, it would expose management interfaces or app endpoints. Mitigation: Verify the service (identify banner/version), keep TLS configs and app server patched, restrict access to trusted IPs or VPN, confirm firewall rules intentionally filter/unfilter as required, and monitor attempts.
+
+
+
