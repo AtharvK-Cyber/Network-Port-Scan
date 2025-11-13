@@ -8,4 +8,8 @@ First We have to Install Nmap on our Device for Now i am using Linux
 Nmap:- https://nmap.org/download
 
 
+For Web Report Click On the Link Bellow 
+https://atharvk-cyber.github.io/Network-Port-Scan/network%20scan.html
+
+
 
