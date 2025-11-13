@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Analysis</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6; 
+            margin: 0 auto;
+            max-width: 1000px;
+            padding: 20px; 
+            color: #333;
+        }
+        h1, h2, h3 { 
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.5em; color: #005a9c; }
+        h3 { font-size: 1.2em; color: #555; }
+        
+        /* New styles for metadata box */
+        .report-meta {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .report-meta p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 25px; 
+            font-size: 0.9em;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: left; 
+            vertical-align: top;
+        }
+        th { 
+            background-color: #f4f4f4; 
+            font-weight: 600;
+        }
+        pre {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: "Courier New", Courier, monospace;
+            white-space: pre-wrap;
+        }
+        .risk-critical { color: #D8000C; font-weight: bold; }
+        .risk-high { color: #E65100; font-weight: bold; }
+        .risk-medium { color: #D68910; }
+        
+        .col-port { width: 10%; }
+        .col-service { width: 15%; }
+        .col-risk { width: 10%; }
+        .col-why { width: 65%; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Security Scan Analysis</h1>
+    
+    <div class="report-meta">
+        <p><strong>Scan Command:</strong> <code>nmap -sS 192.168.153.130/24</code></p>
+        <p><strong>Report By:</strong> AtharvK</p>
+    </div>
+    <h2>IP: 192.168.153.131</h2>
+    
+    <h3>Scan Results</h3>
+    <table>
+        <thead>
+            <tr><th>PORT</th><th>STATE</th><th>SERVICE</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>21/tcp</td><td>open</td><td>ftp</td></tr>
+            <tr><td>22/tcp</td><td>open</td><td>ssh</td></tr>
+            <tr><td>23/tcp</td><td>open</td><td>telnet</td></tr>
+            <tr><td>25/tcp</td><td>open</td><td>smtp</td></tr>
+            <tr><td>53/tcp</td><td>open</td><td>domain</td></tr>
+            <tr><td>80/tcp</td><td>open</td><td>http</td></tr>
+            <tr><td>111/tcp</td><td>open</td><td>rpcbind</td></tr>
+            <tr><td>139/tcp</td><td>open</td><td>netbios-ssn</td></tr>
+            <tr><td>445/tcp</td><td>open</td><td>microsoft-ds</td></tr>
+            <tr><td>512/tcp</td><td>open</td><td>exec</td></tr>
+            <tr><td>513/tcp</td><td>open</td><td>login</td></tr>
+            <tr><td>514/tcp</td><td>open</td><td>shell</td></tr>
+            <tr><td>1099/tcp</td><td>open</td><td>rmiregistry</td></tr>
+            <tr><td>1524/tcp</td><td>open</td><td>ingreslock</td></tr>
+            <tr><td>2049/tcp</td><td>open</td><td>nfs</td></tr>
+            <tr><td>2121/tcp</td><td>open</td><td>ccproxy-ftp</td></tr>
+            <tr><td>3306/tcp</td><td>open</td><td>mysql</td></tr>
+            <tr><td>5432/tcp</td><td>open</td><td>postgresql</td></tr>
+            <tr><td>5900/tcp</td><td>open</td><td>vnc</td></tr>
+            <tr><td>6000/tcp</td><td>open</td><td>X11</td></tr>
+            <tr><td>6667/tcp</td><td>open</td><td>irc</td></tr>
+            <tr><td>8009/tcp</td><td>open</td><td>ajp13</td></tr>
+            <tr><td>8180/tcp</td><td>open</td><td>unknown</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Potential Security Risks</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-port">Port</th>
+                <th class="col-service">Service</th>
+                <th class="col-risk">Risk</th>
+                <th class="col-why">Why / Short Mitigation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>21/tcp</td><td>ftp</td><td class="risk-high">High</td><td>FTP transmits credentials in cleartext. Mitigation: Disable FTP or replace with SFTP/FTPS; restrict access by IP; strong creds.</td></tr>
+            <tr><td>22/tcp</td><td>ssh</td><td class="risk-medium">Medium</td><td>SSH is common remote admin vector — safe if hardened. Mitigation: Use key-based auth, disable password logins, change port or use port-knocking, fail2ban, restrict source IPs.</td></tr>
+            <tr><td>23/tcp</td><td>telnet</td><td class="risk-critical">Critical</td><td>Telnet is unencrypted and easily abused. Mitigation: Disable Telnet; use SSH instead; block on firewall.</td></tr>
+            <tr><td>25/tcp</td><td>smtp</td><td class="risk-medium">Medium</td><td>Mail servers can be abused for spam or exploited. Mitigation: Require auth/relay restrictions, patch MTA, monitor logs, restrict port to known mail gateways.</td></tr>
+            <tr><td>53/tcp</td><td>domain (DNS)</td><td class="risk-high">High</td><td>Open DNS can be used for cache poisoning, DNS amplification. Mitigation: Run authoritative/recursive separation; disable open recursion; rate-limit and restrict queries.</td></tr>
+            <tr><td>80/tcp</td><td>http</td><td class="risk-medium">Medium</td><td>HTTP may expose web apps with vulnerabilities. Mitigation: Use HTTPS, patch web servers, WAF, scan web apps, remove dev/test pages.</td></tr>
+            <tr><td>111/tcp</td><td>rpcbind</td><td class="risk-high">High</td><td>rpcbind/portmapper can expose RPC services and lead to remote exploits. Mitigation: Disable if unused; firewall RPC ports; restrict to trusted hosts.</td></tr>
+            <tr><td>139/tcp</td><td>netbios-ssn</td><td class="risk-high">High</td><td>SMB/NetBIOS exposes file shares and credentials. Mitigation: Block on WAN, disable NetBIOS over TCP if not needed, enforce SMB signing, patch.</td></tr>
+            <tr><td>445/tcp</td><td>microsoft-ds (SMB)</td><td class="risk-critical">Critical</td><td>SMB is high-risk (ransomware/remote code exec history). Mitigation: Block from untrusted networks, apply MS patches, limit shares, use strong auth and monitoring.</td></tr>
+            <tr><td>512/tcp</td><td>exec (rlogin/rsh)</td><td class="risk-critical">Critical</td><td>rsh/rlogins are insecure and allow remote exec without encryption. Mitigation: Disable rsh/rlogin; use SSH.</td></tr>
+            <tr><td>513/tcp</td><td>login (rlogin)</td><td class="risk-critical">Critical</td><td>Same as above — insecure legacy remote login. Mitigation: Disable; use SSH.</td></tr>
+            <tr><td>514/tcp</td><td>shell (rsh/syslog)</td><td class="risk-high">High</td><td>Legacy remote shell services and syslog implications. Mitigation: Disable insecure services; use secure logging and SSH.</td></tr>
+            <tr><td>1099/tcp</td><td>rmiregistry (RMI)</td><td class="risk-high">High</td><td>Java RMI can expose remote objects; often misconfigured and vulnerable. Mitigation: Disable or tunnel over SSH/VPN, enforce strong passwords and network restrictions.</td></tr>
+            <tr><td>1524/tcp</td><td>ingreslock (oracle/legacy)</td><td class="risk-medium">Medium</td><td>Legacy DB or lock services may be unpatched. Mitigation: Remove legacy services, patch, firewall restrict.</td></tr>
+            <tr><td>2049/tcp</td><td>nfs</td><td class="risk-high">High</td><td>NFS can expose file systems; by default little auth for v3. Mitigation: Export only to trusted networks, use NFSv4 with auth (sec), firewall.</td></tr>
+            <tr><td>2121/tcp</td><td>ccproxy-ftp (alternate FTP)</td><td class="risk-high">High</td><td>Alternate FTP services same FTP risks. Mitigation: Disable or secure (SFTP/FTPS), restrict access.</td></tr>
+            <tr><td>3306/tcp</td><td>mysql</td><td class="risk-high">High</td><td>Databases exposed to network are attractive target. Mitigation: Bind to localhost, use strong DB creds, restrict IPs, use TLS, audit/log.</td></tr>
+            <tr><td>5432/tcp</td><td>postgresql</td><td class="risk-high">High</td><td>Same DB concerns as MySQL. Mitigation: Bind to localhost, firewall, strong auth, TLS, role hardening.</td></tr>
+            <tr><td>5900/tcp</td><td>vnc</td><td class="risk-high">High</td><td>VNC often lacks strong auth and is unencrypted. Mitigation: Disable or tunnel over SSH/VPN, enforce strong passwords and network restrictions.</td></tr>
+            <tr><td>6000/tcp</td><td>X11</td><td class="risk-high">High</td><td>X11 remote display can allow input sniffing and code exec. Mitigation: Block from network, use SSH X11 forwarding instead.</td></tr>
+            <tr><td>6667/tcp</td><td>irc</td><td class="risk-medium">Medium</td><td>IRC servers/clients can be abused or used as C2. Mitigation: Restrict access and monitor traffic.</td></tr>
+            <tr><td>8009/tcp</td><td>ajp13</td><td class="risk-high">High</td><td>Apache JServ Protocol (AJP) has had severe vulnerabilities (e.g., Ghostcat). Mitigation: Disable AJP if unused; bind to localhost; apply patches; restrict access.</td></tr>
+            <tr><td>8180/tcp</td><td>unknown / http-alt</td><td class="risk-medium">Medium</td><td>Likely alternate HTTP/tomcat admin UI — can expose admin panels. Mitigation: Verify service, restrict access, enable auth, patch apps.</td></tr>
+        </tbody>
+    </table>
+
+    <h2>IP: 192.168.153.254</h2>
+    <pre>N/A</pre>
+
+    <h2>IP: 192.168.153.130</h2>
+
+    <h3>Scan Results</h3>
+    <table>
+        <thead>
+            <tr><th>PORT</th><th>STATE</th><th>SERVICE</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>80/tcp</td><td>open</td><td>http</td></tr>
+            <tr><td>7443/tcp</td><td>filtered</td><td>oracleas-https</td></tr>
+        </tbody>
+    </table>
+    
+    <h3>Potential Security Risks</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-port">Port</th>
+                <th class="col-service">Service</th>
+                <th class="col-risk">Risk</th>
+                <th class="col-why">Why / Short Mitigation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>80/tcp</td><td>http</td><td class="risk-medium">Medium</td><td>HTTP serves content unencrypted — attackers can intercept or tamper with traffic and web apps can expose vulnerabilities. Mitigation: Serve traffic over HTTPS (redirect 80 → 443), patch web server and web apps, remove default pages, use a WAF, harden and monitor logs.</td></tr>
+            <tr><td>7443/tcp</td><td>oracleas-https (alt HTTPS)</td><td class="risk-medium">Medium</td><td>filtered indicates packets are blocked/filtered by a firewall/IPS (not responding). Port 7443 is often used for application-server HTTPS (Oracle/Tomcat). If reachable, it would expose management interfaces or app endpoints. Mitigation: Verify the service (identify banner/version), keep TLS configs and app server patched, restrict access to trusted IPs or VPN, confirm firewall rules intentionally filter/unfilter as required, and monitor attempts.</td></tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
